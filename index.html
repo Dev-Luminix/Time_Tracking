@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>דיווח שעות יומי · Ewise</title>
+  <meta name="theme-color" content="#581E58" />
+  <script>
+    // Apply a saved light/dark choice before first paint (no saved choice = follow the system).
+    try { const t = localStorage.getItem('ewise.theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div id="toaster" class="toaster" aria-live="polite"></div>
+
+  <header class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-glow hero-glow-2"></div>
+    <div class="hero-inner">
+      <div class="hero-top">
+        <img src="https://www.ewise.co.il/wp-content/uploads/2023/04/Ewise_small_logo_2022_White.png" alt="Ewise" class="logo" />
+        <button id="theme-toggle" type="button" class="theme-toggle"></button>
+      </div>
+      <h1>דיווח שעות <span class="bold">יומי</span></h1>
+      <p class="hero-sub">כמה זמן הקדשת היום ולאיזה פרויקט?</p>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- Success banner -->
+    <div id="done" class="banner" hidden>
+      <svg class="icon icon-success" viewBox="0 0 24 24"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+      <div class="banner-text">
+        <p class="banner-title">הדיווח נשמר</p>
+        <p id="done-details" class="muted truncate"></p>
+      </div>
+    </div>
+
+    <!-- Token setup (only shown when no token is configured) -->
+    <form id="setup" class="card" hidden>
+      <div>
+        <div class="label"><span>monday API Token</span></div>
+        <input id="token-input" type="password" class="field" autocomplete="off" placeholder="הדביקו כאן את ה-Token" />
+        <p class="hint-text">ה-Token נשמר בדפדפן זה בלבד.</p>
+      </div>
+      <button type="submit" class="btn-primary">שמירה</button>
+    </form>
+
+    <form id="form" class="card" novalidate hidden>
+      <!-- Person -->
+      <div>
+        <div class="label"><span>מי מדווח?</span></div>
+        <div class="picker" id="person-picker"></div>
+        <input id="person-other" class="field field-follow" placeholder="שם מלא" autocomplete="name" hidden />
+      </div>
+
+      <!-- Project -->
+      <div>
+        <div class="label"><span>פרויקט</span></div>
+        <div class="picker" id="project-picker"></div>
+      </div>
+
+      <!-- Product (shown once a project is chosen) -->
+      <div id="product-field" hidden>
+        <div class="label"><span>מוצר</span></div>
+        <div class="picker" id="product-picker"></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="min-w-0">
+          <div class="label"><span>תאריך</span></div>
+          <input id="date" type="date" class="field" />
+        </div>
+        <div class="min-w-0">
+          <div class="label"><span>שעות</span><span class="hint">0.25–24</span></div>
+          <input id="hours" type="number" inputmode="decimal" step="0.25" min="0.25" max="24" placeholder="0" class="field field-lg" />
+        </div>
+      </div>
+
+      <div>
+        <div class="label"><span>על מה עבדת?</span></div>
+        <input id="task" class="field" placeholder="לדוגמה: כתיבת תוכן לקמפיין" />
+      </div>
+
+      <div>
+        <div class="label"><span>הערות</span><span class="hint">אופציונלי</span></div>
+        <textarea id="notes" rows="3" class="field field-area"></textarea>
+      </div>
+
+      <button id="submit" type="submit" class="btn-primary" disabled>
+        <svg class="icon spin" viewBox="0 0 24 24" hidden><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+        שליחת דיווח
+      </button>
+    </form>
+
+    <p class="footer">Ewise · השותפה האסטרטגית למיתוג מעסיק, שיווק וסטוריטלינג</p>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
