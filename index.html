@@ -30,14 +30,21 @@
   </header>
 
   <main class="main">
-    <!-- Success banner -->
-    <div id="done" class="banner" hidden>
-      <svg class="icon icon-success" viewBox="0 0 24 24"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
-      <div class="banner-text">
-        <p class="banner-title">הדיווח נשמר</p>
-        <p id="done-details" class="muted truncate"></p>
+    <!-- Thank-you page (shown after a successful submission) -->
+    <section id="thanks" class="card thanks" hidden tabindex="-1" aria-labelledby="thanks-title">
+      <div class="thanks-badge">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
       </div>
-    </div>
+      <div class="thanks-head">
+        <h2 id="thanks-title">תודה! הדיווח נשמר</h2>
+        <p class="muted">השעות נרשמו בהצלחה ב-monday.</p>
+      </div>
+      <dl id="thanks-summary" class="summary"></dl>
+      <div class="thanks-actions">
+        <button id="again-new" type="button" class="btn-primary">דיווח חדש</button>
+        <button id="again-same" type="button" class="btn-secondary">שליחה חוזרת עם אותם פרטים</button>
+      </div>
+    </section>
 
     <!-- Token setup (only shown when no token is configured) -->
     <form id="setup" class="card" hidden>

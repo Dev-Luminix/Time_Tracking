@@ -218,7 +218,7 @@ function isValid() {
   const h = parseFloat(hoursInput.value);
   // A product is required whenever the project has any.
   const productOk = state.products && (state.products.length === 0 || state.product);
-  return Boolean(state.project && productOk && dateInput.value && h > 0 && h <= 24 && taskInput.value.trim()
+  return Boolean(state.project && productOk && dateInput.value && dateInput.value <= today() && h > 0 && h <= 24 && taskInput.value.trim()
     && (!isOther() || otherInput.value.trim()));
 }
 
@@ -332,12 +332,14 @@ function initForm() {
         status: cfg.STATUS_LABEL,
       });
       const [y, m, d] = date.split('-').map(Number);
-      $('done-details').textContent =
-        `${hours} שעות · ${name} ·${new Date(y, m - 1, d).toLocaleDateString('he-IL')}`;
-      $('done').hidden = false;
-      taskInput.value = '';
-      hoursInput.value = '';
-      notesInput.value = '';
+      showThanks([
+        ['מדווח/ת', isOther() ? otherInput.value.trim() : state.person?.name],
+        ['פרויקט', state.project.name],
+        ['מוצר', state.product?.name],
+        ['תאריך', new Date(y, m - 1, d).toLocaleDateString('he-IL')],
+        ['שעות', String(hours)],
+        ['משימה', taskInput.value.trim()],
+      ]);
     } catch (err) {
       console.error(err);
       if (err instanceof monday.AuthError && !cfg.MONDAY_TOKEN) { monday.clearToken(); location.reload(); return; }
@@ -347,6 +349,37 @@ function initForm() {
       updateSubmit();
     }
   });
+
+  // Thank-you page. "New report" clears the per-entry fields but keeps who / project / product / date;
+  // "Same details" brings the form back as it was so it can be tweaked and sent again.
+  const thanks = $('thanks');
+  function showThanks(rows) {
+    const summary = $('thanks-summary');
+    summary.innerHTML = '';
+    for (const [label, value] of rows) {
+      if (!value) continue;
+      const row = el('div');
+      row.append(el('dt', { textContent: label }), el('dd', { textContent: value }));
+      summary.append(row);
+    }
+    form.hidden = true;
+    thanks.hidden = false;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    thanks.focus({ preventScroll: true });
+  }
+  function backToForm(clear) {
+    if (clear) {
+      taskInput.value = '';
+      hoursInput.value = '';
+      notesInput.value = '';
+    }
+    thanks.hidden = true;
+    form.hidden = false;
+    updateSubmit();
+    (clear ? hoursInput : taskInput).focus();
+  }
+  $('again-new').addEventListener('click', () => backToForm(true));
+  $('again-same').addEventListener('click', () => backToForm(false));
 }
 
 // ---------------------------------------------------------------------------
